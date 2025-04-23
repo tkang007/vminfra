@@ -28,7 +28,7 @@ fi
 
 if ! tailscale status >/dev/null 2>&1; then
   echo "tailscale is not connected. Bringing it up..."
-  sudo tailscale up --reset --auth-key=${TAILSCALE_AUTH_KEY}
+  sudo tailscale up --reset --auth-key=${TAILSCALE_AUTH_KEY} --hostname "${VM_WSL}"
 else
   echo "tailscale is already connected."
   sudo tailscale ip -4

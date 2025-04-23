@@ -56,8 +56,9 @@ case "$1" in
     start_multipass_instances;;
   stop)
     stop_multipass_instances;;
+  help)
+    log_info "usage: $0 { help | launch | delete | list | status | start | stop }"
   *)
-    log_warn "Invalid usage" 
-    log_error "usage: $0 { launch | delete | list | status | start | stop }"
+    log_error "Invalid usage; $0 help"     
 esac
 

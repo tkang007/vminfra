@@ -61,7 +61,7 @@ case "$1" in
   down)
     down_tailscales;;
   help)
-    log_error "usage: $0 { setup | remove | list | ping | up | down }"
+    log_error "usage: $0 { help | setup | remove | list | ping | up | down }"
   *)
     log_error "Invalid usage; $0 help"     
 esac

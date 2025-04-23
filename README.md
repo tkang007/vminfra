@@ -63,16 +63,16 @@ code .
 - Confirm scripts
   - local-setup.sh : setup work environment in WSL. 
 ```
-bash ./local-setup.sh 
+./local-setup.sh 
 ```
 
 ### Step 2 - Setup multipass VM instances
 - confirm scripts
   - multipass.sh : launch and manage multipass instances
-  - usage: ./multipass.sh { launch | delete | list | status | start | stop }
+  - usage: ./multipass.sh { help | launch | delete | list | status | start | stop }
 ```
-bash ./multipass.sh help
-bash ./multipass.sh launch 
+./multipass.sh help
+./multipass.sh launch 
 ```
 
 ### Step 3 - Setup tailscale network in VM instances
@@ -80,8 +80,8 @@ bash ./multipass.sh launch
   - tailscale.sh : setup and manage tailscale network
   - usage: ./tailscale.sh { setup | remove | list | ping | up | down | help }
 ```
-bash ./tailscale.sh help
-bash ./tailscale.sh setup
+./tailscale.sh help
+./tailscale.sh setup
 ```
 
 ### Step 4 - Using VM intance
