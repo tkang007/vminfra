@@ -38,9 +38,12 @@ list_tailscales() {
 ping_tailscales() {
   for i in $(seq 1 $VM_COUNT); do
     for j in $(seq 1 $VM_COUNT); do
-      # tailscale ip/dn ping failed to itself.
+      # tailscale ip/dn ping failed to itself. 
+      # tailscale bug in latest version at 2025-04-24
       # reference: tailscale-ping-oneself-case.txt
-      if [ $i -eq $j ]; then continue; fi 
+      if [ $i -eq $j ]; then 
+        log_info "If ping oneself fail, fix iptables by reference ./tailscale-ping-oneself-case.txt"
+      fi 
       ping_tailscale_between "${VM_PREFIX}$i" "${VM_PREFIX}$j" "$TAILSCALE_API_KEY"
     done
   done
