@@ -10,6 +10,7 @@ launch_multipass_instance_if_notexist() {
   local CPUS="${2:-2}"
   local MEM="${3:-2G}"
   local DISK="${4:-10G}"
+  local IMAGE="${5:-22.04}"
 
   if [ -z "$NAME" ]; then
     log_error "Usage: ${FUNCNAME[0]} <vm-name> [<cpus> <memsize> <disksize>]"
@@ -24,12 +25,12 @@ launch_multipass_instance_if_notexist() {
     return 0
   fi 
   
-  log_info "${FUNCNAME[0]}: launch for '$NAME' ..."
-  multipass launch --name "$NAME" --cpus "$CPUS" --memory "$MEM" --disk "$DISK"
+  log_info "${FUNCNAME[0]}: launch '$NAME' with image '$IMAGE' ..."
+  multipass launch --name "$NAME" --cpus "$CPUS" --memory "$MEM" --disk "$DISK" ${IMAGE}
   if [ $? -ne 0 ]; then 
-    log_error "${FUNCNAME[0]}: launch fail for '$NAME'"
+    log_error "${FUNCNAME[0]}: launch fail '$NAME'"
   else
-    log_info "${FUNCNAME[0]}: launch done for '$NAME'"
+    log_info "${FUNCNAME[0]}: launch done '$NAME'"
   fi
 
   # set hostname explitely for mDNS, avahi

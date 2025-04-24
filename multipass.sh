@@ -8,11 +8,7 @@ source ./multipass/multipass-utils.sh
 
 launch_multipass_instances() {
   for i in $(seq 1 $VM_COUNT); do
-    if [ $i -eq 1 ]; then 
-      launch_multipass_instance_if_notexist "${VM_PREFIX}$i" "$CPUS" "$MEM" "$DISK"
-    else
-      multipass clone --name "${VM_PREFIX}$i" "${VM_PREFIX}1"
-    fi
+    launch_multipass_instance_if_notexist "${VM_PREFIX}$i" "$CPUS" "$MEM" "$DISK" "$VM_IMAGE"
   done
 }
 
