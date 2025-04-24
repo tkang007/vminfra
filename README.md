@@ -115,7 +115,8 @@ multipass exec <vm-name>  -- whoami
 ```
 
 ### Known issue
-- failed when ping to a same instance's tailscale ip and dns, even though succeed when ping to other instance's ip and dns. strange thing and need to resolve!!!
+- ping to tailscale ip/dns oneself failed,even though succeed when ping to others 
+  - manual fix in instance iptables by reference, tailscale-ping-oneself-case.txt file.
 
 ### Reference: Solutions for VM in Windows
 -  Multipass (Canonical) — Lightweight and Tailscale-friendly

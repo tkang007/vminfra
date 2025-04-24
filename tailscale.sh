@@ -38,7 +38,8 @@ list_tailscales() {
 ping_tailscales() {
   for i in $(seq 1 $VM_COUNT); do
     for j in $(seq 1 $VM_COUNT); do
-      # tailscale ip/dn ping failed to itself. verify...
+      # tailscale ip/dn ping failed to itself.
+      # reference: tailscale-ping-oneself-case.txt
       if [ $i -eq $j ]; then continue; fi 
       ping_tailscale_between "${VM_PREFIX}$i" "${VM_PREFIX}$j" "$TAILSCALE_API_KEY"
     done
