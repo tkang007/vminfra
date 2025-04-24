@@ -8,7 +8,11 @@ source ./multipass/multipass-utils.sh
 
 launch_multipass_instances() {
   for i in $(seq 1 $VM_COUNT); do
-    launch_multipass_instance_if_notexist "${VM_PREFIX}$i" "$CPUS" "$MEM" "$DISK"
+    if [ $i -eq 1 ]; then 
+      launch_multipass_instance_if_notexist "${VM_PREFIX}$i" "$CPUS" "$MEM" "$DISK"
+    else
+      multipass clone --name "${VM_PREFIX}$i" "${VM_PREFIX}1"
+    fi
   done
 }
 
@@ -40,11 +44,23 @@ stop_multipass_instances() {
   done
 }
 
+sshkey_authorized_instances() {
+  if [ ! -f ${SSHKEY_PATH}.pub ]; then 
+    log_error "ssh key file not exist, ${SSHKEY_PATH}.pub"
+  fi
+  local PUB_KEY=$(cat ${SSHKEY_PATH}.pub)
+  for i in $(seq 1 $VM_COUNT); do
+    log_info "ssh key authorized on the instance: ${VM_PREFIX}$i"
+    multipass_exec "${VM_PREFIX}$i" "echo '$PUB_KEY' >> ~/.ssh/authorized_keys"
+  done
+}
+
 # main 
 
 case "$1" in
   launch)
-    launch_multipass_instances;;
+    launch_multipass_instances
+    sshkey_authorized_instances;;
   delete)
     delete_multipass_instances
     bash ./tailscale.sh remove || true ;; 

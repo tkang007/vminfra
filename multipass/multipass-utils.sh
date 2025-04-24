@@ -37,8 +37,8 @@ launch_multipass_instance_if_notexist() {
   multipass_exec "${NAME}" "sudo hostnamectl set-hostname ${NAME}"
   log_info "${FUNCNAME[0]}: set-hostname done for '$NAME'"
 
-  log_info "${FUNCNAME[0]}: apt update for '$NAME' ..."
-  multipass_exec "$NAME" "sudo apt update"
+  log_info "${FUNCNAME[0]}: apt-get update for '$NAME' ..."
+  multipass_exec "$NAME" "sudo apt-get clean; sudo apt-get update "
   log_info "${FUNCNAME[0]}: apt update done for '$NAME'"
 }
 

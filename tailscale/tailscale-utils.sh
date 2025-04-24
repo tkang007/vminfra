@@ -15,6 +15,7 @@ install_tailscale_if_notexist() {
   fi
 
   log_info "${FUNCNAME[0]}: install tailscale on '$NAME' ..."
+  multipass_exec "$NAME" "sudo apt-get clean"
   multipass_exec "$NAME" "curl -fsSL https://tailscale.com/install.sh | sudo sh"
   log_info "${FUNCNAME[0]}: installed tailscale on '$NAME'"
 }
@@ -88,8 +89,9 @@ remove_tailscale_if_exist() {
 }
 
 
+RETIPDNS=""  # use global variable to return string in function
 function get_tailscale_ipdns() {
-  # return by echo for string
+  # set global RETIPDNS, return 0 for succ, 1 for fail
   local NAME="$1"
   local API_KEY="$2"
 
@@ -97,16 +99,16 @@ function get_tailscale_ipdns() {
     log_error "Uage: ${FUNCNAME[0]} <vm-name1> <api-key>"
   fi
 
-  local IPDNS
-  IPDNS=$(tailscale status --json | \
+  RETIPDNS=$(tailscale status --json | \
           jq -r ".Peer[] | select(.HostName == \"${NAME}\") | \
                 \"\(.TailscaleIPs[0]) \(.DNSName)\"")
-  if [ -z "$IPDNS" ]; then 
-    log_warn "${FUNCNAME[0]}: IP and DNS not found for '$NAME'"
-    echo ""
+  if [ -z "$RETIPDNS" ]; then 
+    log_warn "${FUNCNAME[0]}: DNS IP not found for '$NAME'"
+    return 1
+  else 
+    log_info "${FUNCNAME[0]}: DNS IP for '$NAME': $RETIPDNS"
+    return 0
   fi
-  log_info "${FUNCNAME[0]}: IP and DNS for '$NAME': $IPDNS"
-  echo "$IPDNS"
 }
 
 
@@ -119,22 +121,22 @@ ping_tailscale_between() {
     log_error "Uage: ${FUNCNAME[0]} <vm-name1> <api-key>"
   fi
 
-  local SRCIPDNS=$(get_tailscale_ipdns "$SRCNAME" "$API_KEY")
-  if [ -z "$SRCIPDNS" ]; then
+  get_tailscale_ipdns "$SRCNAME" "$API_KEY"
+  if [ $? -ne 0 ]; then 
     log_warn "${FUNCNAME[0]}: fail for '$SRCNAME'"
     return 1
-  fi 
-  local SRCDNS=$(echo "$SRCIPDNS" | awk '{print $2}')
+  fi
+  local SRCDNS=$(echo "$RETIPDNS" | awk '{print $2}')
   
-  local DSTIPDNS=$(get_tailscale_ipdns "$DSTNAME" "$API_KEY")
-  if [ -z  "$SRCIPDNS" ]; then
-    log_warn "${FUNCNAME[0]}: fail for '$SRCNAME'"
+  get_tailscale_ipdns "$DSTNAME" "$API_KEY"
+  if [ $? -ne 0 ]; then 
+    log_warn "${FUNCNAME[0]}: fail for '$DSTNAME'"
     return 1
   fi 
-  local DSTDNS=$(echo "$DSTIPDNS" | awk '{print $2}')
+  local DSTDNS=$(echo "$RETIPDNS" | awk '{print $2}')
 
   log_info "ping '$SRCDNS' => '$DSTDNS'"
-  multipass_exec "$SRCNAME" "ping -c 1 ${DSTDNS}"
+  multipass_exec "$SRCNAME" "ping -c 1 ${DSTDNS} > /dev/null"
   if [ $? -ne 0 ]; then 
     log_warn "${FUNCNAME[0]}: ping fail '$SRCDNS' => '$DSTDNS'"
     return 1

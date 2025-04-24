@@ -114,6 +114,9 @@ multipass exec <vm-name>  -- whoami
 ./tailscale.sh remove
 ```
 
+### Known issue
+- failed when ping to a same instance's tailscale ip and dns, even though succeed when ping to other instance's ip and dns. strange thing and need to resolve!!!
+
 ### Reference: Solutions for VM in Windows
 -  Multipass (Canonical) — Lightweight and Tailscale-friendly
   - Creates Ubuntu VMs quickly

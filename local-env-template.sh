@@ -5,8 +5,18 @@
 # please souce this script before using other script.
 # usage: $ source ./this.sh
 
+#
+# ssh key file 
+#
+SSHKEY_PATH="$HOME/.ssh/id_rsa"
+
+#
+# Multipass environment.
+#
 # Enable alias expansion in this script
 shopt -s expand_aliases  
+# multipass alias for using Windows hosted VMs. 
+alias multipass='/mnt/c/Program\ Files/Multipass/bin/multipass.exe'
 
 #
 # VMs environment.
@@ -19,17 +29,12 @@ MEM="2G"          # vm instance memory
 DISK="10G"        # vm instance disk
 
 #
-# Multipass environment.
-#
-# multipass alias for using Windows hosted VMs. 
-alias multipass='/mnt/c/Program\ Files/Multipass/bin/multipass.exe'
-
-#
 # Tailscale environment. Please update 
 #
 TAILNET="xxx@zzz.com" 
 TAILSCALE_AUTH_KEY="tskey-auth-xxx"
 TAILSCALE_API_KEY="tskey-api-xxx"
+
 
 #
 # common functions
@@ -49,10 +54,10 @@ function multipass_exec() {
   local NAME="$1"
   local SHCMD="$2"
 
-  log_info "exec on $NAME : $SHCMD"
+  #log_info "exec on $NAME : $SHCMD"
   multipass exec "$NAME" -- bash -c "$SHCMD" 
   if [ $? -ne 0 ]; then
     log_error "fail on $NAME : $SHCMD" 
   fi  
-  log_info "done on $NAME : $SHCMD" 
+  #log_info "done on $NAME : $SHCMD" 
 }
