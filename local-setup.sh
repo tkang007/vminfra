@@ -26,34 +26,30 @@ if ! command -v curl; then
   sudo apt-get install -y curl
 fi
 
-if false || ! command -v ansible; then
+if ! command -v tailscale; then
+  log_info "tailscale install ..."
+  curl -fsSL https://tailscale.com/install.sh | sudo sh
+fi
+
+if ! tailscale status >/dev/null 2>&1 >/dev/null; then
+  log_info "tailscale is not connected. Bringing it up..."
+  sudo tailscale up --reset --auth-key=${TAILSCALE_AUTH_KEY} --hostname "${VM_WSL}"
+fi
+log_info "tailscale tatus"
+sudo tailscale status
+
+# for ansible
+if ! command -v ansible; then
   log_info "ansible install ..."
   sudo apt-get install -y ansible
   # for ssh key handle at playbook
   sudo ansible-galaxy collection install community.crypto
 fi
 
-if ! command -v tailscale; then
-  log_info "tailscale install ..."
-  curl -fsSL https://tailscale.com/install.sh | sudo sh
+if [ ! -f "$SSHKEY_PATH" ]; then 
+  log_info "ssh keygen ${SSHKEY_PATH} ..."
+  ssh-keygen -t rsa -b 4096 -f ${SSHKEY_PATH} -N '' -q
+else  
+  log_info "ssh key already exist ${SSHKEY_PATH}"  
 fi
 
-# ssh key generating if the key already exists
-if [ ! -f "$KEY_PATH" ]; then
-  log_info "SSH key not found. Generating a new key pair..."
-  ssh-keygen -t rsa -b 2048 -f "$KEY_PATH" -N "" -q
-  log_info "SSH key pair generated at $KEY_PATH"
-else
-  log_info "SSH key already exists at $KEY_PATH"
-fi
-
-if ! tailscale status >/dev/null 2>&1; then
-  log_info "tailscale is not connected. Bringing it up..."
-  sudo tailscale up --reset --auth-key=${TAILSCALE_AUTH_KEY} --hostname "${VM_WSL}"
-else
-  log_info "tailscale is already connected."
-  sudo tailscale ip -4
-
-  log_info "tailscale tatus"
-  sudo tailscale status
-fi
