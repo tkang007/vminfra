@@ -5,26 +5,38 @@ Windows hosted multiple VMs with stable IP and FQDN.
 ## Purpose 
 Simple way to prepare multiple VMs in Windows with stable IP and FQDN for various VM based solutions.  
 
-## Usage cases
-These are only a few usage cases with multiple VMs.
-- Easier alternatives of WSL2 or VirtualBox.
-- HA or replication nodes for RDBMS: PostgreSQL, MySQL
-- Distributed DBMS, Cache and Messaging: Ignite, NATS, Redis
-- Distributed file or object storage: Gluster, Gluster, Ceph, Minio
-- Cluster for Podman, Docker Swarm, Nomad, Kubernetes,K3S, Mickok8s
-- Cluster for etc, consul, ...
-
-Note: 
-- 'podman machine' only support 1 VM in a host.
+## Usage to experiment cluster solutions 
+These are only a few cases based on multiple VMs.
+- Easier alternative of WSL2 or VirtualBox.
+- SDS (Software Defined Storage) 
+  - DRBD(Ditributed Replication Block Device) 
+  - Ceph: cluster of Block, File, Object storage
+  - GlusterFS: cluster of File storage 
+  - Minio: cluster of Object storage
+- HA (High Availability) 
+  - ClusterLab Stack : Pacemaker, Corosync, Fencing, Resource Agents
+  - Keeplived
+- LB (Load Balancer) 
+  - HAProxy, Nginx, Traefik, Envoy, MetalLB
+  - Keeplived
+- DBMS replications, sharding, connection pool
+  - PostgreSQL replicaiton: Async/Sync/Quorum/Logical/Physical Replication
+  - PostgreSQL conn. pool and/or load balancer: pgBouncer, pgPool-II
+  - MySQL replcation: Async/Semi-synch/Group/Multi-Source replication 
+  - MySQL conn. pool and/ load balancer: ProxySQL, MaxScale
+  - Mongodb: sharding, replica set (HA)
+- Distributed Caching and Messaging: Ignite, NATS, Redis
+- Container solution with Podman, Docker Swarm, Nomad, Kubernetes,K3S, Mickok8s
+- Classic application HA with podman + systemd
   
 
 ### Step 0 - Setup Windows system
-- Windows Terminal installation 
+- Windows Terminal
 - VSCode installation
 - Multipass installation
 - Tailscale installation
-- Tailscale auth-key (reusable), api-key and MagicDNS
-- Hyper-V enable for WSL2 and multipass
+- Tailscale auth-key (reusable), api-key and MagicDNS enabling
+- Hyper-V enabled for WSL2 and multipass
 - WSL2 Ubuntu instance for bash, Windows hosted Multipass
 - Working directory at Windows
 ```cmd
@@ -35,7 +47,7 @@ cd C:\Proinfra
 ### Step 1 - Setup WSL Ubuntu work environment  
 - login to WSL2 ubuntu and install git
 ``` 
-wsl -d Ubuntu-24.04  
+wsl -d Ubuntu-22.04  
 sudo apt-get update
 sudo apt-get install -y git curl jq 
 ```
@@ -78,14 +90,14 @@ code .
 ### Step 3 - Setup tailscale network in VM instances
 - confirm scripts
   - tailscale.sh : setup and manage tailscale network
-  - usage: ./tailscale.sh { setup | remove | list | ping | up | down | help }
+  - usage: ./tailscale.sh { help | setup | remove | list | ping | up | down | hostfile }
 ```
 ./tailscale.sh help
 ./tailscale.sh setup
 ```
 
 ### Step 4 - Using VM intance
-- connect to a VM instance (multipass own ssh key) 
+- connect to a VM instance (multipass managed ssh key) 
 ```
 multipass shell <vm-name>  
 multipass exec <vm-name>  -- whoami
@@ -126,7 +138,7 @@ multipass exec <vm-name>  -- whoami
 
 - podman machine 
   - Create minimal Fedora-based virtual machine, called Fedora CoreOS.
-  - Only 1 VM in a host
+  - 'podman machine' only support 1 VM in a host.
   - A shared networking layer (gvproxy) that doesn't support isolated multi-VM environments easily
   
 - WSL2 + systemd — Lightweight, but trickier for networking
