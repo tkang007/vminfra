@@ -4,6 +4,7 @@
 # please update with your credential and intension 
 # please souce this script before using other script.
 # usage: $ source ./this.sh
+#  or $ set -a; source ./this.sh; set +a
 
 #
 # ssh key file 
@@ -32,10 +33,13 @@ DISK="10G"        # vm instance disk
 #
 # Tailscale environment. Please update 
 #
-TAILNET="xxx@zzz.com" 
+TAILSCALE_TAILNET="xxx@zzz.com" 
 TAILSCALE_AUTH_KEY="tskey-auth-xxx"
 TAILSCALE_API_KEY="tskey-api-xxx"
 #
+
+# ansible config, no prompot and error for recreated instance
+ANSIBLE_HOST_KEY_CHECKING=False
 
 #
 # common functions
@@ -62,3 +66,4 @@ function multipass_exec() {
   fi  
   log_info "done on $NAME : $SHCMD" 
 }
+

@@ -69,7 +69,7 @@ remove_tailscale_if_exist() {
 
   log_info "${FUNCNAME[0]}: searching device for '$NAME' at tailscale site"
   DEVICEID=$(curl -s -H "Authorization: Bearer $API_KEY" \
-    "https://api.tailscale.com/api/v2/tailnet/${TAILNET}/devices" \
+    "https://api.tailscale.com/api/v2/tailnet/${TAILSCALE_TAILNET}/devices" \
     | jq -r ".devices[] | select(.hostname == \"$NAME\") | .id")
   
   if [ -z "$DEVICEID" ]; then
