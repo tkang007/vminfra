@@ -131,7 +131,7 @@ multipass exec <vm-name>  -- whoami
   - manual fix in instance iptables by reference, tailscale-ping-oneself-case.txt file.
 
 ### Reference: Solutions for VM in Windows
--  Multipass (Canonical) — Lightweight and Tailscale-friendly
+-  Multipass (Canonical) — Lightweight and Tailscale-friendly 
   - Creates Ubuntu VMs quickly
   - Each VM is isolated and runs in Hyper-V or VirtualBox
   - Works great with Tailscale in each VM
@@ -141,24 +141,23 @@ multipass exec <vm-name>  -- whoami
   - 'podman machine' only support 1 VM in a host.
   - A shared networking layer (gvproxy) that doesn't support isolated multi-VM environments easily
   
-- WSL2 + systemd — Lightweight, but trickier for networking
+- WSL2 + systemd — Lightweight, but trickier for networking 
   - You can create multiple WSL2 distributions (e.g., Ubuntu-1, Ubuntu-2)
   - Tailscale now works inside WSL2 (with systemd-enabled distros)
   - You can assign different IPs and run tailscale up in each
   - Some caveats: WSL2 networking can be weird, and multicast/broadcast isn't reliable. But for many use cases, it works fine.
 
-- VirtualBox or VMware + Linux ISO — Full control, but heavier
-Create VMs manually
+- VirtualBox or VMware + Linux ISO — Full control, but heavier Create VMs manually
   - Install Tailscale inside each one
   - Useful for more complex networking needs or emulating full systems
 
-- Docker Desktop + Tailscale Sidecar (advanced)
+- Docker Desktop + Tailscale Sidecar (advanced) 
   - Not a real VM, but you can run containers with Tailscale sidecars
   - Lightweight and fast
   - Useful for microservice-style development
 
 ### Reference: Solutions for Network 
-- avihi : mDNS solution
+- avihi : mDNS solution 
   - initial try was not success when ping between instances
 
 - headscale : similar with tailscale
